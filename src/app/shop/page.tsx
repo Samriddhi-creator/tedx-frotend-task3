@@ -4,8 +4,9 @@ import { useState, useEffect } from 'react'
 import ProductCard from '@/components/shop/ProductCard'
 import OrderSummary from '@/components/shop/OrderSummary'
 import CheckoutOverlay from '@/components/checkout/CheckoutOverlay'
-import { fetchProducts } from '@/services/shopService'
+/*import { fetchProducts } from '@/services/shopService'*/
 import { Product } from '@/types/shop'
+import { products as mockProducts } from '@/data/mockProducts'
 
 
 export default function ShopPage() {
@@ -13,6 +14,11 @@ export default function ShopPage() {
   const [loading, setLoading] = useState(true)
   const [checkoutOpen, setCheckoutOpen] = useState(false)
 
+  useEffect(() => {
+    setProducts(mockProducts)
+    setLoading(false)
+  }, [])
+  /*
   useEffect(() => {
     fetchProducts()
       .then(data => {
@@ -31,7 +37,7 @@ export default function ShopPage() {
       })
       .catch(console.error)
       .finally(() => setLoading(false))
-  }, [])
+  }, [])*/
 
   const passages = products.filter(p => p.category === 'passages')
   const artifacts = products.filter(p => p.category === 'artifacts')
