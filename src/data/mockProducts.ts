@@ -9,7 +9,6 @@ export const products: Product[] = [
         image: '/images/session1.jpg',
         category: 'passages',
         specifications: [
-            'Includes morning coffee',
             'Arrival entry',
             'Exclusive coordinate map',
             'Sector A seating',
