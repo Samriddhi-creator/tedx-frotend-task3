@@ -4,10 +4,8 @@ import { useState, useEffect } from 'react'
 import ProductCard from '@/components/shop/ProductCard'
 import OrderSummary from '@/components/shop/OrderSummary'
 import CheckoutOverlay from '@/components/checkout/CheckoutOverlay'
-/*import { fetchProducts } from '@/services/shopService'*/
 import { Product } from '@/types/shop'
 import { products as mockProducts } from '@/data/mockProducts'
-
 
 export default function ShopPage() {
   const [products, setProducts] = useState<Product[]>([])
@@ -18,85 +16,86 @@ export default function ShopPage() {
     setProducts(mockProducts)
     setLoading(false)
   }, [])
-  /*
-  useEffect(() => {
-    fetchProducts()
-      .then(data => {
-        const mapped: Product[] = data.map((p: any) => ({
-          id: p.slug,
-          name: p.name,
-          description: p.description ?? '',
-          price: p.price,
-          image: p.images?.[0] ?? '',
-          category: p.type === 'TICKET' ? 'passages' : p.type === 'MERCH' ? 'artifacts' : 'archive',
-          variants: p.sizes?.length
-            ? p.sizes.map((s: string) => ({ label: s, value: s }))
-            : undefined,
-        }))
-        setProducts(mapped)
-      })
-      .catch(console.error)
-      .finally(() => setLoading(false))
-  }, [])*/
 
   const passages = products.filter(p => p.category === 'passages')
   const artifacts = products.filter(p => p.category === 'artifacts')
   const archive = products.filter(p => p.category === 'archive')
 
   return (
-    <main className="min-h-screen bg-[#f0ede6] text-[#1a1a1a]">
-      <nav className="border-b border-[#e0ddd8] px-8 py-4 flex items-center justify-between">
-        <span className="text-sm tracking-widest text-[#1a1a1a]">TEDX × TERRA INCOGNITA</span>
-        <div className="flex gap-8 text-xs tracking-widest text-[#888]">
-          <span>ARCHIVE</span>
-          <span>PROGRAM</span>
-          <span className="text-[#1a1a1a]">ACQUISITIONS</span>
+    <main className="min-h-screen bg-stone-100 text-neutral-900">
+      {/* Nav */}
+      <nav className="border-b border-stone-200 bg-stone-100/80 px-8 py-0 flex items-center justify-center">
+        <div className="w-full max-w-[1280px] px-8 h-16 flex justify-between items-center">
+          <span className="text-sm font-medium tracking-widest text-neutral-900 uppercase">
+            TEDx <span className="text-red-600">×</span> Terra Incognita
+          </span>
+          <div className="flex gap-6 text-xs text-stone-500 uppercase tracking-wider font-['Consolas']">
+            <span>Archive</span>
+            <span>Program</span>
+            <span className="text-neutral-900">Acquisitions</span>
+          </div>
         </div>
       </nav>
 
-      <div className="max-w-7xl mx-auto px-8 py-12 flex gap-12">
-        <div className="flex-1">
-          <h1 className="font-serif text-4xl mb-2 text-[#1a1a1a]">Expedition Supplies</h1>
-          <p className="text-[#888] text-sm mb-12">
-            Secure your passage and acquire essential artifacts for the journey into the unknown.
-          </p>
+      {/* Page content */}
+      <div className="flex justify-center">
+        <div className="w-full max-w-[1280px] px-8 py-20 flex gap-12 relative">
 
-          {loading ? (
-            <p className="text-[#aaa] text-sm">Loading supplies...</p>
-          ) : (
-            <>
-              {passages.length > 0 && (
-                <section className="mb-12">
-                  <p className="text-xs tracking-widest text-[#aaa] mb-4">PASSAGES</p>
-                  <div className="flex flex-col">
-                    {passages.map(p => <ProductCard key={p.id} product={p} />)}
-                  </div>
-                </section>
-              )}
+          {/* Left — Product list */}
+          <div className="w-[789px] shrink-0">
+            <h1 className="text-5xl font-light text-neutral-900 leading-[48px]">Expedition Supplies</h1>
+            <p className="text-stone-500 text-lg font-light mt-4 max-w-[672px] leading-7">
+              Secure your passage and acquire essential artifacts for the journey into the unknown. All items are logged in the central archive.
+            </p>
 
-              {artifacts.length > 0 && (
-                <section className="mb-12">
-                  <p className="text-xs tracking-widest text-[#aaa] mb-4">ARTIFACTS</p>
-                  <div className="flex flex-col">
-                    {artifacts.map(p => <ProductCard key={p.id} product={p} />)}
-                  </div>
-                </section>
-              )}
+            {loading ? (
+              <p className="text-stone-400 text-sm mt-12">Loading supplies...</p>
+            ) : (
+              <div className="mt-12">
+                {passages.length > 0 && (
+                  <section className="mb-16">
+                    <div className="flex items-center gap-4 mb-8">
+                      <p className="text-xs text-stone-500 uppercase tracking-[2.4px] font-['Consolas'] shrink-0">Passages</p>
+                      <div className="flex-1 h-px bg-stone-300" />
+                    </div>
+                    <div className="flex flex-col">
+                      {passages.map(p => <ProductCard key={p.id} product={p} />)}
+                    </div>
+                  </section>
+                )}
 
-              {archive.length > 0 && (
-                <section className="mb-12">
-                  <p className="text-xs tracking-widest text-[#aaa] mb-4">ARCHIVE ITEMS</p>
-                  <div className="flex flex-col">
-                    {archive.map(p => <ProductCard key={p.id} product={p} />)}
-                  </div>
-                </section>
-              )}
-            </>
-          )}
-        </div>
+                {artifacts.length > 0 && (
+                  <section className="mb-16">
+                    <div className="flex items-center gap-4 mb-8">
+                      <p className="text-xs text-stone-500 uppercase tracking-[2.4px] font-['Consolas'] shrink-0">Artifacts</p>
+                      <div className="flex-1 h-px bg-stone-300" />
+                    </div>
+                    <div className="flex flex-col">
+                      {artifacts.map(p => <ProductCard key={p.id} product={p} />)}
+                    </div>
+                  </section>
+                )}
 
-        <div className="w-80 shrink-0">
-          <OrderSummary onCheckout={() => setCheckoutOpen(true)} />
+                {archive.length > 0 && (
+                  <section className="mb-16">
+                    <div className="flex items-center gap-4 mb-8">
+                      <p className="text-xs text-stone-500 uppercase tracking-[2.4px] font-['Consolas'] shrink-0">Archive Items</p>
+                      <div className="flex-1 h-px bg-stone-300" />
+                    </div>
+                    <div className="flex flex-col">
+                      {archive.map(p => <ProductCard key={p.id} product={p} />)}
+                    </div>
+                  </section>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Right — Sticky order summary */}
+          <div className="w-96 shrink-0">
+            <OrderSummary onCheckout={() => setCheckoutOpen(true)} />
+          </div>
+
         </div>
       </div>
 
