@@ -13,15 +13,14 @@ type Props = {
 export default function ProductCard({ product }: Props) {
     const { items, addItem, updateQuantity } = useCart()
 
-    const displayVariants = product.variants && product.variants.length > 0
-        ? product.variants
-        : [
-            { value: 'S', label: 'Small' },
-            { value: 'M', label: 'Medium' },
-            { value: 'L', label: 'Large' }
-        ]
+    const hasRealVariants = product.variants && product.variants.length > 0
+    const displayVariants = hasRealVariants
+        ? product.variants!
+        : []
 
-    const [selectedVariant, setSelectedVariant] = useState(displayVariants[0] ?? undefined)
+    const [selectedVariant, setSelectedVariant] = useState(
+        hasRealVariants ? displayVariants[0] : undefined
+    )
     const [expanded, setExpanded] = useState(false)
 
     const cartItem = items.find(
@@ -83,18 +82,20 @@ export default function ProductCard({ product }: Props) {
                             className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-3 sm:mt-0"
                             onClick={e => e.stopPropagation()}
                         >
-                            <select
-                                value={selectedVariant?.value}
-                                onChange={e => {
-                                    const v = displayVariants.find(v => v.value === e.target.value)
-                                    if (v) setSelectedVariant(v)
-                                }}
-                                className="border border-stone-300 text-stone-600 text-xs px-2.5 py-1.5 bg-white cursor-pointer hover:border-stone-400 focus:outline-none min-w-[64px] font-['Consolas'] w-max"
-                            >
-                                {displayVariants.map(v => (
-                                    <option key={v.value} value={v.value}>{v.value}</option>
-                                ))}
-                            </select>
+                            {hasRealVariants && (
+                                <select
+                                    value={selectedVariant?.value}
+                                    onChange={e => {
+                                        const v = displayVariants.find(v => v.value === e.target.value)
+                                        if (v) setSelectedVariant(v)
+                                    }}
+                                    className="border border-stone-300 text-stone-600 text-xs px-2.5 py-1.5 bg-white cursor-pointer hover:border-stone-400 focus:outline-none min-w-[64px] font-['Consolas'] w-max"
+                                >
+                                    {displayVariants.map(v => (
+                                        <option key={v.value} value={v.value}>{v.value}</option>
+                                    ))}
+                                </select>
+                            )}
 
                             <div className="w-max sm:ml-auto flex items-center border border-stone-300/80 bg-white shadow-sm">
                                 <button
@@ -109,8 +110,7 @@ export default function ProductCard({ product }: Props) {
                                 </div>
                                 <button
                                     onClick={handleAdd}
-                                    disabled={product.maxQuantity !== undefined && quantity >= product.maxQuantity}
-                                    className="w-8 h-8 flex items-center justify-center text-stone-400 hover:text-stone-600 disabled:opacity-30 transition-colors"
+                                    className="w-8 h-8 flex items-center justify-center text-stone-400 hover:text-stone-600 transition-colors"
                                 >
                                     <span className="text-xs">+</span>
                                 </button>
@@ -214,18 +214,20 @@ export default function ProductCard({ product }: Props) {
 
                                         {/* ── Variant Selector + Quantity Controls (Expanded) ── */}
                                         <div className="flex flex-wrap items-center gap-4 mt-auto pt-4 border-t border-stone-200">
-                                            <select
-                                                value={selectedVariant?.value}
-                                                onChange={e => {
-                                                    const v = displayVariants.find(v => v.value === e.target.value)
-                                                    if (v) setSelectedVariant(v)
-                                                }}
-                                                className="border border-stone-300 text-stone-600 text-xs px-2.5 py-1.5 bg-white cursor-pointer hover:border-stone-400 focus:outline-none min-w-[64px] font-['Consolas']"
-                                            >
-                                                {displayVariants.map(v => (
-                                                    <option key={v.value} value={v.value}>{v.value}</option>
-                                                ))}
-                                            </select>
+                                            {hasRealVariants && (
+                                                <select
+                                                    value={selectedVariant?.value}
+                                                    onChange={e => {
+                                                        const v = displayVariants.find(v => v.value === e.target.value)
+                                                        if (v) setSelectedVariant(v)
+                                                    }}
+                                                    className="border border-stone-300 text-stone-600 text-xs px-2.5 py-1.5 bg-white cursor-pointer hover:border-stone-400 focus:outline-none min-w-[64px] font-['Consolas']"
+                                                >
+                                                    {displayVariants.map(v => (
+                                                        <option key={v.value} value={v.value}>{v.value}</option>
+                                                    ))}
+                                                </select>
+                                            )}
 
                                             <div className="flex items-center border border-stone-300/80 bg-white shadow-sm">
                                                 <button
@@ -240,8 +242,7 @@ export default function ProductCard({ product }: Props) {
                                                 </div>
                                                 <button
                                                     onClick={handleAdd}
-                                                    disabled={product.maxQuantity !== undefined && quantity >= product.maxQuantity}
-                                                    className="w-9 h-9 flex items-center justify-center text-stone-400 hover:text-stone-600 disabled:opacity-30 transition-colors"
+                                                    className="w-9 h-9 flex items-center justify-center text-stone-400 hover:text-stone-600 transition-colors"
                                                 >
                                                     <span className="text-sm">+</span>
                                                 </button>

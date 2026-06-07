@@ -1,4 +1,7 @@
+import { UserDetails, DeliveryDetails } from '@/types/shop'
+
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5005'
+
 
 export async function fetchProducts() {
     const res = await fetch(`${BASE_URL}/products`)
@@ -52,6 +55,17 @@ export async function clearCart(userId: string) {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId })
+    })
+    const json = await res.json()
+    if (!json.success) throw new Error(json.message)
+    return json.data
+}
+
+export async function checkout(userId: string, userDetails: UserDetails, deliveryDetails: DeliveryDetails) {
+    const res = await fetch(`${BASE_URL}/cart/checkout`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, userDetails, deliveryDetails })
     })
     const json = await res.json()
     if (!json.success) throw new Error(json.message)

@@ -8,6 +8,8 @@ import StepPersonal from './StepPersonal'
 import StepDelivery from './StepDelivery'
 import StepReview from './StepReview'
 import SuccessScreen from './SuccessScreen'
+import { checkout } from '@/services/shopService'
+import { toast } from 'sonner'
 
 type Props = {
     isOpen: boolean
@@ -29,6 +31,25 @@ export default function CheckoutOverlay({ isOpen, onClose }: Props) {
     const [deliveryDetails, setDeliveryDetails] = useState<DeliveryDetails>({
         type: 'in-campus'
     })
+    const [isSubmitting, setIsSubmitting] = useState(false)
+
+    const handleCheckout = async () => {
+        const userId = localStorage.getItem('tedx-user-id')
+        if (!userId) {
+            toast.error('Session error. Please refresh the page.')
+            return
+        }
+        setIsSubmitting(true)
+        try {
+            await checkout(userId, userDetails, deliveryDetails)
+            setIsSuccess(true)
+        } catch (err: any) {
+            console.error(err)
+            toast.error(err.message || 'Checkout failed. Please try again.')
+        } finally {
+            setIsSubmitting(false)
+        }
+    }
 
     const goNext = () => {
         setDirection(1)
@@ -222,13 +243,13 @@ export default function CheckoutOverlay({ isOpen, onClose }: Props) {
                                         )}
 
                                         <button
-                                            onClick={currentStep < 3 ? goNext : () => setIsSuccess(true)}
-                                            disabled={!isStepValid()}
+                                            onClick={currentStep < 3 ? goNext : handleCheckout}
+                                            disabled={!isStepValid() || isSubmitting}
                                             className="px-6 py-3 text-xs tracking-widest rounded transition-colors
                                                        bg-[#1a1a1a] text-white hover:bg-[#333] 
                                                        disabled:bg-[#e0ddd8] disabled:text-[#aaa] disabled:cursor-not-allowed"
                                         >
-                                            {currentStep === 3 ? 'PROCEED TO PAYMENT' : 'CONTINUE →'}
+                                            {isSubmitting ? 'PROCESSING...' : (currentStep === 3 ? 'PROCEED TO PAYMENT' : 'CONTINUE →')}
                                         </button>
                                     </div>
                                 </>

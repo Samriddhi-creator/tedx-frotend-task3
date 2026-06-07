@@ -98,23 +98,24 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }, [userId])
 
     const addItem = async (product: Product, variant?: ProductVariant) => {
-        // If product already exists in local items, update its quantity instead of adding
-        const existing = items.find(
-            item => item.product.id === product.id &&
-                item.selectedVariant?.value === variant?.value
-        )
-        if (existing) {
-            if (product.maxQuantity !== undefined && existing.quantity >= product.maxQuantity) {
-                toast.error(`Maximum quantity of ${product.maxQuantity} reached for this item`)
-                return
+        // Optimistic UI update — always increment locally first
+        setItems(prev => {
+            const existing = prev.find(
+                item => item.product.id === product.id &&
+                    item.selectedVariant?.value === variant?.value
+            )
+            if (existing) {
+                return prev.map(item =>
+                    item.product.id === product.id &&
+                    item.selectedVariant?.value === variant?.value
+                        ? { ...item, quantity: item.quantity + 1 }
+                        : item
+                )
             }
-            await updateQuantity(product.id, existing.quantity + 1, variant?.value)
-            return
-        }
+            return [...prev, { product, quantity: 1, selectedVariant: variant }]
+        })
 
-        // Optimistic UI update for new item
-        setItems(prev => [...prev, { product, quantity: 1, selectedVariant: variant }])
-
+        // Always use addToCart — backend handles both new and existing items (increments qty)
         if (userId) {
             try {
                 const updatedCart = await addToCart(
@@ -154,12 +155,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
     const updateQuantity = async (productId: string, quantity: number, selectedSize?: string) => {
         if (quantity === 0) {
             await removeItem(productId, selectedSize)
-            return
-        }
-
-        const prod = dbProducts.find(p => p.id === productId)
-        if (prod && prod.maxQuantity !== undefined && quantity > prod.maxQuantity) {
-            toast.error(`Maximum quantity of ${prod.maxQuantity} reached for this item`)
             return
         }
 
