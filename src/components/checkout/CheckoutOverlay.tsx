@@ -47,7 +47,6 @@ export default function CheckoutOverlay({ isOpen, onClose }: Props) {
     }
     const [isSuccess, setIsSuccess] = useState(false)
 
-    // This function already beautifully checks if inputs are empty!
     const isStepValid = () => {
         if (currentStep === 1) {
             return (
@@ -140,9 +139,9 @@ export default function CheckoutOverlay({ isOpen, onClose }: Props) {
                                 />
                             ) : (
                                 <>
-                                    {/* Body */}
+                                    {/* ── Body ── */}
                                     <div className="flex flex-col sm:flex-row" style={{ minHeight: '380px' }}>
-                                        {/* Step progress — horizontal strip on mobile, vertical sidebar on sm+ */}
+                                        {/* ── Step Progress Sidebar ── */}
                                         <div className="sm:w-48 border-b sm:border-b-0 sm:border-r border-[#e0ddd8] px-4 sm:px-6 py-4 sm:py-8 flex sm:flex-col justify-between shrink-0">
                                             <div className="flex sm:flex-col gap-4 sm:gap-0">
                                                 <p className="hidden sm:block text-xs tracking-widest text-[#aaa] mb-6">PROGRESS</p>
@@ -209,7 +208,7 @@ export default function CheckoutOverlay({ isOpen, onClose }: Props) {
                                         </div>
                                     </div>
 
-                                    {/* Footer */}
+                                    {/* ── Footer ── */}
                                     <div className="flex justify-between items-center px-4 sm:px-8 py-4 sm:py-5 border-t border-[#e0ddd8]">
                                         {currentStep > 1 ? (
                                             <button
