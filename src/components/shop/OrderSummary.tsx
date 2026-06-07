@@ -25,7 +25,7 @@ export default function OrderSummary({ onCheckout }: { onCheckout: () => void })
         }
     }
     return (
-        <div className="sticky top-8 border border-[#e0ddd8] rounded bg-white p-6">
+        <div className="lg:sticky lg:top-8 border border-[#e0ddd8] rounded bg-white p-5 sm:p-6">
             <p className="text-xs tracking-widest text-[#aaa] mb-2">EXPEDITION MANIFEST</p>
             <h2 className="font-serif text-xl mb-6 text-[#1a1a1a]">Selected Coordinates</h2>
 

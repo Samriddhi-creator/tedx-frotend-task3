@@ -98,7 +98,7 @@ export default function CheckoutOverlay({ isOpen, onClose }: Props) {
                         <div className="bg-white rounded w-full max-w-3xl shadow-xl overflow-hidden">
 
                             {/* Header */}
-                            <div className="flex items-center justify-between px-8 py-5 border-b border-[#e0ddd8]">
+                            <div className="flex items-center justify-between px-4 sm:px-8 py-4 sm:py-5 border-b border-[#e0ddd8]">
                                 <div className="flex items-center gap-3">
                                     <div className="w-8 h-8 rounded-full border border-[#1a1a1a] flex items-center justify-center">
                                         <span className="text-xs">⊕</span>
@@ -141,14 +141,15 @@ export default function CheckoutOverlay({ isOpen, onClose }: Props) {
                             ) : (
                                 <>
                                     {/* Body */}
-                                    <div className="flex" style={{ minHeight: '420px' }}>
-                                        <div className="w-48 border-r border-[#e0ddd8] px-6 py-8 flex flex-col justify-between shrink-0">
-                                            <div>
-                                                <p className="text-xs tracking-widest text-[#aaa] mb-6">PROGRESS</p>
-                                                <div className="flex flex-col gap-6">
+                                    <div className="flex flex-col sm:flex-row" style={{ minHeight: '380px' }}>
+                                        {/* Step progress — horizontal strip on mobile, vertical sidebar on sm+ */}
+                                        <div className="sm:w-48 border-b sm:border-b-0 sm:border-r border-[#e0ddd8] px-4 sm:px-6 py-4 sm:py-8 flex sm:flex-col justify-between shrink-0">
+                                            <div className="flex sm:flex-col gap-4 sm:gap-0">
+                                                <p className="hidden sm:block text-xs tracking-widest text-[#aaa] mb-6">PROGRESS</p>
+                                                <div className="flex sm:flex-col gap-4 sm:gap-6">
                                                     {steps.map(step => (
-                                                        <div key={step.id} className="flex items-center gap-3">
-                                                            <div className={`w-6 h-6 rounded-full border flex items-center justify-center text-xs shrink-0 ${currentStep > step.id
+                                                        <div key={step.id} className="flex items-center gap-2 sm:gap-3">
+                                                            <div className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full border flex items-center justify-center text-xs shrink-0 ${currentStep > step.id
                                                                 ? 'border-[#1a1a1a] bg-[#1a1a1a] text-white'
                                                                 : currentStep === step.id
                                                                     ? 'border-[#1a1a1a] text-[#1a1a1a]'
@@ -156,7 +157,7 @@ export default function CheckoutOverlay({ isOpen, onClose }: Props) {
                                                                 }`}>
                                                                 {currentStep > step.id ? '✓' : step.id}
                                                             </div>
-                                                            <span className={`text-sm ${currentStep === step.id
+                                                            <span className={`text-xs sm:text-sm ${currentStep === step.id
                                                                 ? 'text-[#1a1a1a] font-medium'
                                                                 : currentStep > step.id
                                                                     ? 'text-[#1a1a1a]'
@@ -168,7 +169,7 @@ export default function CheckoutOverlay({ isOpen, onClose }: Props) {
                                                     ))}
                                                 </div>
                                             </div>
-                                            <div className="border border-[#e0ddd8] rounded p-3 text-xs text-[#aaa] leading-relaxed">
+                                            <div className="hidden sm:block border border-[#e0ddd8] rounded p-3 text-xs text-[#aaa] leading-relaxed">
                                                 Encryption active.<br />
                                                 Transmission secure.<br />
                                                 Terra Incognita Server.
@@ -185,7 +186,7 @@ export default function CheckoutOverlay({ isOpen, onClose }: Props) {
                                                     animate="center"
                                                     exit="exit"
                                                     transition={{ duration: 0.2 }}
-                                                    className="absolute inset-0 px-8 py-8 overflow-y-auto"
+                                                    className="absolute inset-0 px-4 sm:px-8 py-5 sm:py-8 overflow-y-auto"
                                                 >
                                                     {currentStep === 1 && (
                                                         <StepPersonal details={userDetails} onChange={setUserDetails} />
@@ -209,7 +210,7 @@ export default function CheckoutOverlay({ isOpen, onClose }: Props) {
                                     </div>
 
                                     {/* Footer */}
-                                    <div className="flex justify-between items-center px-8 py-5 border-t border-[#e0ddd8]">
+                                    <div className="flex justify-between items-center px-4 sm:px-8 py-4 sm:py-5 border-t border-[#e0ddd8]">
                                         {currentStep > 1 ? (
                                             <button
                                                 onClick={goBack}
