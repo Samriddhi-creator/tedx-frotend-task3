@@ -92,7 +92,7 @@ export default function ProductCard({ product }: Props) {
                                         value={selectedVariant?.value}
                                         onChange={e => {
                                             const v = displayVariants.find(v => v.value === e.target.value)
-                                            setSelectedVariant(v)
+                                            if (v) setSelectedVariant(v)
                                         }}
                                         className="border border-stone-300 text-stone-600 text-xs px-2.5 py-1.5 bg-white cursor-pointer hover:border-stone-400 focus:outline-none min-w-[64px] font-['Consolas']"
                                     >
