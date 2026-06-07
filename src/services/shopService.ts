@@ -1,4 +1,4 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5005'
 
 export async function fetchProducts() {
     const res = await fetch(`${BASE_URL}/products`)
@@ -25,22 +25,22 @@ export async function addToCart(userId: string, productId: string, quantity: num
     return json.data
 }
 
-export async function updateCartItem(userId: string, productId: string, quantity: number) {
+export async function updateCartItem(userId: string, productId: string, quantity: number, selectedSize?: string) {
     const res = await fetch(`${BASE_URL}/cart/update`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, productId, quantity })
+        body: JSON.stringify({ userId, productId, quantity, selectedSize })
     })
     const json = await res.json()
     if (!json.success) throw new Error(json.message)
     return json.data
 }
 
-export async function removeFromCart(userId: string, productId: string) {
+export async function removeFromCart(userId: string, productId: string, selectedSize?: string) {
     const res = await fetch(`${BASE_URL}/cart/remove/${productId}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId })
+        body: JSON.stringify({ userId, selectedSize })
     })
     const json = await res.json()
     if (!json.success) throw new Error(json.message)

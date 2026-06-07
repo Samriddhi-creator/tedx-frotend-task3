@@ -4,8 +4,9 @@ import { useState, useEffect } from 'react'
 import ProductCard from '@/components/shop/ProductCard'
 import OrderSummary from '@/components/shop/OrderSummary'
 import CheckoutOverlay from '@/components/checkout/CheckoutOverlay'
-import { Product } from '@/types/shop'
+import { Product, BackendProduct } from '@/types/shop'
 import { products as mockProducts } from '@/data/mockProducts'
+import { fetchProducts } from '@/services/shopService'
 
 export default function ShopPage() {
   const [products, setProducts] = useState<Product[]>([])
@@ -13,8 +14,33 @@ export default function ShopPage() {
   const [checkoutOpen, setCheckoutOpen] = useState(false)
 
   useEffect(() => {
-    setProducts(mockProducts)
-    setLoading(false)
+    const getProducts = async () => {
+      try {
+        const backendProducts = await fetchProducts() as BackendProduct[]
+        const mapped = backendProducts.map((bp) => {
+          const mock = mockProducts.find(mp => mp.id === bp.slug)
+          return {
+            id: bp.slug,
+            dbId: bp._id,
+            name: bp.name,
+            description: bp.description || mock?.description || '',
+            price: bp.price,
+            image: bp.images?.[0]?.startsWith('/images/') ? (mock?.image || bp.images[0]) : (bp.images?.[0] || mock?.image || ''),
+            category: mock?.category || (bp.type === 'TICKET' ? 'passages' : 'artifacts'),
+            variants: mock?.variants || (bp.sizes ? bp.sizes.map((s) => ({ label: s, value: s })) : undefined),
+            specifications: mock?.specifications || [],
+            maxQuantity: mock?.maxQuantity
+          }
+        })
+        setProducts(mapped)
+      } catch (err) {
+        console.error('Error fetching products from backend, falling back to mock data:', err)
+        setProducts(mockProducts)
+      } finally {
+        setLoading(false)
+      }
+    }
+    getProducts()
   }, [])
 
   const passages = products.filter(p => p.category === 'passages')

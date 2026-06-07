@@ -1,5 +1,24 @@
 export type ProductCategory = 'passages' | 'artifacts' | 'archive'
 
+export interface BackendCartItem {
+    productId: string
+    quantity: number
+    productType: string
+    priceAtPurchase: number
+    selectedSize?: string
+}
+
+export interface BackendProduct {
+    _id: string
+    slug: string
+    name: string
+    description?: string
+    price: number
+    type: string
+    images?: string[]
+    sizes?: string[]
+}
+
 export type ProductVariant =
     {
         label: string
@@ -9,6 +28,8 @@ export type ProductVariant =
 export type Product =
     {
         id: string
+        dbId?: string
+        _id?: string
         name: string
         description: string
         price: number

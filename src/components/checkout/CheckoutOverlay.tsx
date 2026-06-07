@@ -14,12 +14,11 @@ type Props = {
     onClose: () => void
 }
 
-const steps =
-    [
-        { id: 1, label: ' Coordinates' },
-        { id: 2, label: 'Route' },
-        { id: 3, label: 'Manifest' }
-    ]
+const steps = [
+    { id: 1, label: ' Coordinates' },
+    { id: 2, label: 'Route' },
+    { id: 3, label: 'Manifest' }
+]
 
 export default function CheckoutOverlay({ isOpen, onClose }: Props) {
     const [currentStep, setCurrentStep] = useState(1)
@@ -47,6 +46,33 @@ export default function CheckoutOverlay({ isOpen, onClose }: Props) {
         exit: (dir: number) => ({ x: dir > 0 ? -60 : 60, opacity: 0 }),
     }
     const [isSuccess, setIsSuccess] = useState(false)
+
+    // This function already beautifully checks if inputs are empty!
+    const isStepValid = () => {
+        if (currentStep === 1) {
+            return (
+                userDetails.fullName.trim() !== '' &&
+                userDetails.email.trim() !== '' &&
+                userDetails.phone.trim() !== ''
+            )
+        }
+        if (currentStep === 2) {
+            if (deliveryDetails.type === 'in-campus') {
+                return (
+                    (deliveryDetails.hostel ?? '').trim() !== '' &&
+                    (deliveryDetails.roomNumber ?? '').trim() !== ''
+                )
+            } else {
+                return (
+                    (deliveryDetails.addressLine ?? '').trim() !== '' &&
+                    (deliveryDetails.city ?? '').trim() !== '' &&
+                    (deliveryDetails.state ?? '').trim() !== '' &&
+                    (deliveryDetails.postalCode ?? '').trim() !== ''
+                )
+            }
+        }
+        return true
+    }
 
     return (
         <AnimatePresence>
@@ -194,9 +220,13 @@ export default function CheckoutOverlay({ isOpen, onClose }: Props) {
                                         ) : (
                                             <div />
                                         )}
+
                                         <button
                                             onClick={currentStep < 3 ? goNext : () => setIsSuccess(true)}
-                                            className="px-6 py-3 bg-[#6b6b6b] hover:bg-[#555] text-white text-xs tracking-widest rounded transition-colors"
+                                            disabled={!isStepValid()}
+                                            className="px-6 py-3 text-xs tracking-widest rounded transition-colors
+                                                       bg-[#1a1a1a] text-white hover:bg-[#333] 
+                                                       disabled:bg-[#e0ddd8] disabled:text-[#aaa] disabled:cursor-not-allowed"
                                         >
                                             {currentStep === 3 ? 'PROCEED TO PAYMENT' : 'CONTINUE →'}
                                         </button>

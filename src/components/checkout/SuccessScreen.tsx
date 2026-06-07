@@ -1,7 +1,8 @@
 'use client'
-
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useCart } from '@/store/cartStore'
+
 
 type Props = {
     email: string
@@ -11,7 +12,7 @@ type Props = {
 export default function SuccessScreen({ email, onClose }: Props) {
     const { clearCart } = useCart()
 
-    const authCode = 'TI-' + Math.floor(100000 + Math.random() * 900000)
+    const [authCode] = useState(() => 'TI-' + Math.floor(100000 + Math.random() * 900000))
 
     const handleReturn = () => {
         clearCart()

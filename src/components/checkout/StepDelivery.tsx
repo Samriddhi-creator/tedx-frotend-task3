@@ -16,16 +16,35 @@ export default function StepDelivery({ details, onChange }: Props) {
   const update = (fields: Partial<DeliveryDetails>) => {
     onChange({ ...details, ...fields })
   }
+  const handleTypeChange = (type: 'in-campus' | 'out-of-campus') => {
+    if (type === 'in-campus') {
+      onChange({
+        type: 'in-campus',
+        hostel: '',
+        roomNumber: '',
+        notes: ''
+      })
+    } else {
+      onChange({
+        type: 'out-of-campus',
+        addressLine: '',
+        city: '',
+        state: '',
+        postalCode: ''
+      })
+    }
+  }
 
   return (
     <div>
       <h2 className="font-serif text-2xl mb-1 text-[#1a1a1a]">Collection Route</h2>
       <p className="text-[#888] text-sm mb-8">Designate the drop point for your artifacts and passes.</p>
 
-
+      {/* Mode Selector */}
       <div className="flex mb-8 border border-[#e0ddd8] rounded overflow-hidden">
         <button
-          onClick={() => update({ type: 'in-campus' })}
+          type="button"
+          onClick={() => handleTypeChange('in-campus')} // Updated to use reset helper
           className={`flex-1 flex items-center justify-center gap-2 py-3 text-xs tracking-widest transition-colors ${details.type === 'in-campus'
             ? 'bg-[#1a1a1a] text-white'
             : 'text-[#888] hover:bg-[#f8f7f4]'
@@ -35,7 +54,8 @@ export default function StepDelivery({ details, onChange }: Props) {
           IN CAMPUS
         </button>
         <button
-          onClick={() => update({ type: 'out-of-campus' })}
+          type="button"
+          onClick={() => handleTypeChange('out-of-campus')} // Updated to use reset helper
           className={`flex-1 flex items-center justify-center gap-2 py-3 text-xs tracking-widest transition-colors ${details.type === 'out-of-campus'
             ? 'bg-[#1a1a1a] text-white'
             : 'text-[#888] hover:bg-[#f8f7f4]'
@@ -46,6 +66,7 @@ export default function StepDelivery({ details, onChange }: Props) {
         </button>
       </div>
 
+      {/* In-Campus Fields */}
       {details.type === 'in-campus' && (
         <div className="space-y-6">
           <div>
@@ -85,7 +106,7 @@ export default function StepDelivery({ details, onChange }: Props) {
         </div>
       )}
 
-
+      {/* Out-of-Campus Fields */}
       {details.type === 'out-of-campus' && (
         <div className="space-y-6">
           <div>

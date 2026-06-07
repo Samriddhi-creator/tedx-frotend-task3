@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { Product } from '@/types/shop'
 import { useCart } from '@/store/cartStore'
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
+import { Card, CardContent } from '@/components/ui/card'
 import * as VisuallyHidden from '@radix-ui/react-visually-hidden'
 
 type Props = {
@@ -24,13 +25,15 @@ export default function ProductCard({ product }: Props) {
     const quantity = cartItem?.quantity ?? 0
 
     const handleAdd = () => addItem(product, selectedVariant)
-    const handleDecrement = () => updateQuantity(product.id, quantity - 1)
+    const handleDecrement = () => updateQuantity(product.id, quantity - 1, selectedVariant?.value)
 
     return (
         <>
-            <div className={`pb-8 border-b border-stone-300/60 mb-0 transition-colors ${quantity > 0 ? 'bg-stone-50' : ''}`}>
-                <div className="h-48 flex gap-8">
-
+            <Card
+                className={`rounded-none border-0 border-b border-stone-300/60 shadow-none pb-8 mb-0 transition-colors ${quantity > 0 ? 'bg-stone-50' : 'bg-transparent'
+                    }`}
+            >
+                <CardContent className="p-0 h-48 flex gap-8">
                     {/* Image */}
                     <div className="w-48 h-48 bg-stone-100 shrink-0 overflow-hidden relative">
                         {product.image && (
@@ -64,7 +67,6 @@ export default function ProductCard({ product }: Props) {
 
                         {/* Bottom row */}
                         <div className="flex items-center">
-
                             {/* Variant selector */}
                             {product.variants && (
                                 <select
@@ -103,16 +105,16 @@ export default function ProductCard({ product }: Props) {
                                 </div>
                                 <button
                                     onClick={handleAdd}
-                                    className="w-8 h-8 flex items-center justify-center text-stone-400 hover:text-stone-600 transition-colors"
+                                    disabled={product.maxQuantity !== undefined && quantity >= product.maxQuantity}
+                                    className="w-8 h-8 flex items-center justify-center text-stone-400 hover:text-stone-600 disabled:opacity-30 transition-colors"
                                 >
                                     <span className="text-xs">+</span>
                                 </button>
                             </div>
-
                         </div>
                     </div>
-                </div>
-            </div>
+                </CardContent>
+            </Card>
 
             {/* Details Modal */}
             <Dialog open={showDetails} onOpenChange={setShowDetails}>
